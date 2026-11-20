@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="dark" />
+<link rel="icon" href="data:," />
+<title>DueMate Live Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07211c;
+    --bg-deep:#051814;
+    --card:#0d2f28;
+    --card-2:#0a2821;
+    --card-3:#10362d;
+    --line:rgba(45,212,191,.18);
+    --line-soft:rgba(255,255,255,.08);
+    --teal:#14b8a6;
+    --teal-bright:#2dd4bf;
+    --teal-dim:rgba(20,184,166,.14);
+    --gold:#f2c14e;
+    --gold-dim:rgba(242,193,78,.12);
+    --red:#f87171;
+    --red-dim:rgba(248,113,113,.12);
+    --green:#34d399;
+    --green-dim:rgba(52,211,153,.12);
+    --text:#ffffff;
+    --muted:#a7c4bd;
+    --muted-2:#7fa398;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:
+      radial-gradient(900px 500px at 85% -5%, rgba(20,184,166,.14), transparent 60%),
+      radial-gradient(700px 400px at -10% 30%, rgba(242,193,78,.05), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:"Manrope", system-ui, -apple-system, Segoe UI, sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  button, input{font:inherit}
+  button, input{min-height:44px}
+  .bn{font-family:"Hind Siliguri","Manrope",sans-serif}
+  .mono{font-family:"JetBrains Mono", ui-monospace, monospace}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px 0}
+
+  /* ---------- Simulated strip ---------- */
+  .sim-strip{
+    background:var(--gold);
+    color:#1a1405;
+    text-align:center;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    padding:8px 16px;
+  }
+  .sim-strip span{opacity:.65;font-weight:700}
+
+  /* ---------- Header ---------- */
+  header{padding:34px 0 8px}
+  .brand-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo-mark{
+    width:52px;height:52px;flex:none;border-radius:50%;
+    background:linear-gradient(145deg,#2dd4bf,#0d9488);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 0 3px rgba(45,212,191,.18), 0 10px 24px rgba(0,0,0,.35);
+  }
+  .logo-mark svg{width:28px;height:28px}
+  .wordmark{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1}
+  .wordmark .mate{color:var(--teal-bright)}
+  .brand-sub{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);margin-top:5px}
+  .demo-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    border:1px solid rgba(242,193,78,.45);background:var(--gold-dim);color:var(--gold);
+    font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+    padding:9px 14px;border-radius:999px;white-space:nowrap;
+  }
+  .demo-badge i{width:8px;height:8px;border-radius:50%;background:var(--gold);display:block;animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .tagline{
+    margin:22px 0 0;font-size:clamp(22px,3.4vw,34px);font-weight:800;line-height:1.2;letter-spacing:-.015em;max-width:760px;
+  }
+  .tagline em{font-style:normal;color:var(--teal-bright)}
+  .tagline .gold{color:var(--gold)}
+  .header-note{margin:12px 0 0;color:var(--muted);font-size:15px;max-width:680px}
+  .header-note strong{color:#fff}
+
+  /* flow strip */
+  .flow{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    margin:26px 0 4px;padding:14px 16px;
+    background:var(--card-2);border:1px solid var(--line-soft);border-radius:14px;
+  }
+  .flow-step{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:700;color:var(--muted)}
+  .flow-step b{
+    width:26px;height:26px;flex:none;border-radius:50%;
+    background:var(--teal-dim);color:var(--teal-bright);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-size:12px;
+  }
+  .flow-step.active{color:#fff}
+  .flow-arrow{color:var(--muted-2);font-size:14px}
+
+  /* ---------- Grid & cards ---------- */
+  main{padding:22px 0 10px}
+  .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+  @media (max-width:880px){.grid{grid-template-columns:minmax(0,1fr)}}
+  .card{
+    min-width:0;
+    background:linear-gradient(180deg,var(--card-3),var(--card));
+    border:1px solid var(--line-soft);
+    border-radius:18px;
+    padding:22px;
+    display:flex;flex-direction:column;
+    box-shadow:0 18px 40px rgba(0,0,0,.28);
+  }
+  .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px}
+  .kicker{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--teal-bright)}
+  .kicker .num{
+    width:24px;height:24px;border-radius:7px;background:var(--teal);color:#04211b;
+    display:flex;align-items:center;justify-content:center;font-size:13px;letter-spacing:0;
+  }
+  .sim-tag{
+    flex:none;font-size:10px;font-weight:800;letter-spacing:.1em;
+    color:var(--gold);border:1px dashed rgba(242,193,78,.55);
+    padding:4px 8px;border-radius:6px;text-transform:uppercase;
+  }
+  .card h2{margin:8px 0 6px;font-size:21px;font-weight:800;line-height:1.25;letter-spacing:-.01em}
+  .card .lede{margin:0 0 16px;color:var(--muted);font-size:14px}
+  .card .foot-note{margin-top:auto;padding-top:14px;border-top:1px solid var(--line-soft);color:var(--muted);font-size:13px}
+  .card .foot-note strong{color:#fff}
+
+  /* ---------- Ledger ---------- */
+  .dist-row{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    background:var(--card-2);border:1px solid var(--line-soft);border-radius:12px;
+    padding:12px 14px;margin-bottom:14px;
+  }
+  .dist-row .label{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
+  .dist-row .name{font-size:16px;font-weight:800}
+  .dist-row .total{text-align:right}
+  .dist-row .total .amt{font-size:20px;font-weight:800;color:var(--gold)}
+  .dist-row .total .cap{font-size:11px;color:var(--muted-2);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+
+  .ledger{width:100%;max-width:100%;border-collapse:collapse;font-size:14px;table-layout:auto}
+  .card h2{overflow-wrap:break-word}
+  .receipt{min-width:0}
+  .receipt .r-row .v{min-width:0;overflow-wrap:break-word}
+  .phone{min-width:0}
+  .lock-form-row .btn{flex:none}
+  @media (max-width:480px){
+    .status{white-space:normal}
+    .lock-form-row{flex-wrap:wrap}
+    .lock-form-row .btn{width:100%}
+    .lock-form-row input{width:100%}
+  }
+  .ledger th{
+    text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);
+    padding:8px 10px;border-bottom:1px solid var(--line);
+  }
+  .ledger th.r,.ledger td.r{text-align:right}
+  .ledger td{padding:13px 10px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+  .ledger tr:last-child td{border-bottom:none}
+  .ledger .shop{font-weight:700}
+  .ledger .amt{font-weight:800;white-space:nowrap}
+  .status{
+    display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+    font-size:11px;font-weight:800;letter-spacing:.03em;
+    padding:5px 9px;border-radius:999px;
+  }
+  .status::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+  .st-dispute{color:var(--gold);background:var(--gold-dim)}
+  .st-promise{color:var(--teal-bright);background:var(--teal-dim)}
+  .st-settled{color:var(--green);background:var(--green-dim)}
+  .st-wait{color:#cbd5e1;background:rgba(203,213,225,.1)}
+  @media (max-width:480px){
+    .ledger th:nth-child(3),.ledger td:nth-child(3){display:none}
+    .ledger .status{margin-top:5px}
+    .ledger td.shopcell{line-height:1.35}
+  }
+  .ledger-mobile-status{display:none}
+  @media (max-width:480px){.ledger-mobile-status{display:block}}
+
+  /* ---------- Call ---------- */
+  .phone{
+    background:#05120e;border:1px solid var(--line-soft);border-radius:16px;overflow:hidden;
+  }
+  .phone-head{
+    display:flex;align-items:center;gap:10px;
+    padding:12px 14px;background:rgba(20,184,166,.08);border-bottom:1px solid var(--line-soft);
+  }
+  .avatar{
+    width:36px;height:36px;flex:none;border-radius:50%;background:var(--teal);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#04211b;
+  }
+  .phone-head .who{flex:1;min-width:0}
+  .phone-head .who b{display:block;font-size:14px}
+  .phone-head .who span{font-size:12px;color:var(--muted)}
+  .live-dot{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--muted-2);text-transform:uppercase}
+  .live-dot i{width:8px;height:8px;border-radius:50%;background:#475569;display:block}
+  .live-dot.on{color:var(--red)}
+  .live-dot.on i{background:var(--red);animation:pulse 1s infinite}
+
+  .chat{padding:16px 14px 18px;min-height:308px;display:flex;flex-direction:column;gap:12px}
+  .chat-empty{margin:auto;text-align:center;color:var(--muted-2);font-size:14px;padding:20px}
+  .chat-empty .big{font-size:30px;display:block;margin-bottom:8px}
+  .msg{max-width:88%;opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .35s ease}
+  .msg.show{opacity:1;transform:none}
+  .msg .bubble{padding:12px 14px;border-radius:14px;font-size:16px;line-height:1.45}
+  .msg .sub{font-size:12.5px;margin-top:6px;line-height:1.4}
+  .msg.ai{align-self:flex-start}
+  .msg.ai .bubble{background:#134e43;border:1px solid rgba(45,212,191,.3);border-bottom-left-radius:4px}
+  .msg.ai .sub{color:var(--muted)}
+  .msg.ai .from{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-bright);margin-bottom:5px}
+  .msg.retailer{align-self:flex-end;text-align:right}
+  .msg.retailer .bubble{background:#1e3a34;border:1px solid var(--line-soft);border-bottom-right-radius:4px;text-align:left}
+  .msg.retailer .sub{color:var(--muted)}
+  .msg.retailer .from{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .alert-box{
+    align-self:stretch;border-radius:12px;padding:13px 14px;
+    opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .35s ease;
+  }
+  .alert-box.show{opacity:1;transform:none}
+  .alert-box .t{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px;letter-spacing:.04em}
+  .alert-box p{margin:5px 0 0;font-size:13px;line-height:1.5}
+  .alert-gold{background:var(--gold-dim);border:1px solid rgba(242,193,78,.5);color:#fde9b8}
+  .alert-gold .t{color:var(--gold)}
+  .alert-gold p{color:#e8d9ac}
+  .alert-red{background:var(--red-dim);border:1px solid rgba(248,113,113,.5);color:#fecaca}
+  .alert-red .t{color:var(--red)}
+  .alert-red p{color:#f3c1c1}
+  .typing{align-self:flex-start;display:none;gap:5px;padding:12px 14px;background:#134e43;border-radius:14px;border-bottom-left-radius:4px}
+  .typing.on{display:flex}
+  .typing i{width:7px;height:7px;border-radius:50%;background:var(--teal-bright);animation:tp 1s infinite}
+  .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+  @keyframes tp{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+
+  .btn{
+    appearance:none;border:none;cursor:pointer;border-radius:12px;
+    font-weight:800;font-size:15px;padding:12px 20px;
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    transition:transform .12s ease, filter .12s ease, opacity .12s ease;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn:focus-visible, input:focus-visible, .chip:focus-visible{outline:2px solid var(--teal-bright);outline-offset:2px}
+  .btn-teal{background:linear-gradient(135deg,#2dd4bf,#14b8a6);color:#04211b;box-shadow:0 8px 20px rgba(20,184,166,.25)}
+  .btn-teal:hover{filter:brightness(1.07)}
+  .btn[disabled]{opacity:.55;cursor:default}
+  .btn-row{margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .btn-row .hint{font-size:12.5px;color:var(--muted-2)}
+
+  /* ---------- Promise Lock ---------- */
+  .lock-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+  @media (max-width:480px){.lock-stats{grid-template-columns:1fr 1fr}.lock-stats .stat:last-child{grid-column:1/-1}}
+  .stat{background:var(--card-2);border:1px solid var(--line-soft);border-radius:12px;padding:12px}
+  .stat .cap{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted-2)}
+  .stat .val{font-size:19px;font-weight:800;margin-top:3px}
+  .stat .val.teal{color:var(--teal-bright)}
+  .capbar-wrap{margin-bottom:18px}
+  .capbar-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:7px}
+  .capbar{height:16px;border-radius:999px;background:#05120e;border:1px solid var(--line-soft);overflow:hidden;display:flex}
+  .capbar .used{background:linear-gradient(90deg,#0d9488,#14b8a6);width:80%;transition:width .5s ease}
+  .capbar .new{background:var(--gold);width:0%;transition:width .5s ease}
+  .capbar .free{flex:1}
+  .lock-form label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px}
+  .lock-form-row{display:flex;gap:10px}
+  .lock-form-row input{
+    flex:1;min-width:0;background:#05120e;border:1px solid var(--line);border-radius:12px;
+    color:#fff;font-size:17px;font-weight:700;padding:11px 14px;
+  }
+  .lock-form-row input::placeholder{color:#54766d;font-weight:500}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .chip{
+    background:transparent;border:1px solid var(--line);color:var(--teal-bright);
+    border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;min-height:38px;
+  }
+  .chip:hover{background:var(--teal-dim)}
+  .verdict{margin-top:16px;border-radius:12px;padding:14px 15px;display:none}
+  .verdict.show{display:block;animation:pop .25s ease}
+  @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .verdict .t{font-weight:800;font-size:15px;display:flex;gap:8px;align-items:center}
+  .verdict p{margin:5px 0 0;font-size:13.5px;line-height:1.55}
+  .verdict.ok{background:var(--green-dim);border:1px solid rgba(52,211,153,.5)}
+  .verdict.ok .t{color:var(--green)}
+  .verdict.ok p{color:#b7ecd6}
+  .verdict.block{background:var(--red-dim);border:1px solid rgba(248,113,113,.5)}
+  .verdict.block .t{color:var(--red)}
+  .verdict.block p{color:#f3c1c1}
+
+  /* ---------- Receipt ---------- */
+  .receipt{
+    background:#f7f3e8;color:#14332b;border-radius:6px;
+    padding:20px 20px 16px;position:relative;
+    font-size:14px;
+    box-shadow:0 14px 30px rgba(0,0,0,.35);
+  }
+  .receipt::before,.receipt::after{
+    content:"";position:absolute;left:0;right:0;height:8px;
+    background-image:radial-gradient(circle at 8px 4px, transparent 5px, #f7f3e8 5.5px);
+    background-size:16px 8px;
+  }
+  .receipt::before{top:-7px;transform:rotate(180deg)}
+  .receipt::after{bottom:-7px}
+  .receipt .r-head{text-align:center;border-bottom:2px dashed #b9c9c2;padding-bottom:12px;margin-bottom:12px}
+  .receipt .r-head b{font-size:17px;letter-spacing:.02em}
+  .receipt .r-head span{display:block;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5b7a70;margin-top:3px}
+  .r-row{display:flex;justify-content:space-between;gap:14px;padding:7px 0;border-bottom:1px dashed #ccd8d2}
+  .r-row .k{color:#5b7a70;font-weight:600}
+  .r-row .v{font-weight:800;text-align:right}
+  .r-row .v.teal{color:#0d9488}
+  .seal{
+    margin-top:15px;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;
+    background:#0d9488;color:#fff;font-weight:800;font-size:13.5px;letter-spacing:.02em;
+    border-radius:999px;padding:11px 14px;line-height:1.35;
+  }
+  .two-way{
+    margin-top:16px;background:var(--gold-dim);border:1px solid rgba(242,193,78,.35);border-radius:12px;padding:13px 14px;
+  }
+  .two-way .t{color:var(--gold);font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;display:flex;gap:8px;align-items:center}
+  .two-way p{margin:6px 0 0;font-size:13.5px;color:#eadfc0;line-height:1.55}
+
+  /* ---------- Two-Way Promises ---------- */
+  .scenario-box{
+    background:var(--card-2);border:1px solid var(--line-soft);border-radius:12px;
+    padding:13px 14px;margin-bottom:16px;font-size:13.5px;line-height:1.55;color:var(--muted);
+  }
+  .scenario-box b{color:#fff}
+  .scenario-box .amt-gold{color:var(--gold);font-weight:800}
+  .slider-label{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px}
+  .slider-label .slider-val{font-size:15px;font-weight:800;color:var(--gold);white-space:nowrap}
+  input[type="range"]{
+    -webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:999px;
+    background:#05120e;border:1px solid var(--line-soft);outline-offset:4px;cursor:pointer;padding:0;min-height:0;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;
+    background:var(--gold);border:3px solid #07211c;box-shadow:0 0 0 2px var(--gold),0 6px 14px rgba(0,0,0,.4);cursor:pointer;
+  }
+  input[type="range"]::-moz-range-thumb{
+    width:20px;height:20px;border-radius:50%;background:var(--gold);border:3px solid #07211c;
+    box-shadow:0 0 0 2px var(--gold),0 6px 14px rgba(0,0,0,.4);cursor:pointer;
+  }
+  input[type="range"].teal-range::-webkit-slider-thumb{background:var(--teal-bright);box-shadow:0 0 0 2px var(--teal-bright),0 6px 14px rgba(0,0,0,.4)}
+  input[type="range"].teal-range::-moz-range-thumb{background:var(--teal-bright);box-shadow:0 0 0 2px var(--teal-bright),0 6px 14px rgba(0,0,0,.4)}
+  .slider-ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--muted-2);font-weight:700;margin-top:6px}
+  .dates-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch;margin-top:16px}
+  @media (max-width:480px){.dates-grid{grid-template-columns:1fr}.dates-arrow{transform:rotate(90deg);justify-self:center}}
+  .date-card{background:#05120e;border:1px solid var(--line-soft);border-radius:12px;padding:13px 14px;text-align:center}
+  .date-card .cap{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted-2)}
+  .date-card .day{font-size:22px;font-weight:800;margin-top:4px;line-height:1.15}
+  .date-card .sub{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}
+  .date-card.shifted{border-color:rgba(242,193,78,.55);background:rgba(242,193,78,.06)}
+  .date-card.shifted .day{color:var(--gold)}
+  .date-card.ontime{border-color:rgba(45,212,191,.35)}
+  .date-card.ontime .day{color:var(--teal-bright)}
+  .dates-arrow{display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--gold);font-weight:800}
+  .shift-banner{
+    margin-top:14px;border-radius:12px;padding:13px 14px;font-size:14px;line-height:1.55;font-weight:700;
+    background:rgba(203,213,225,.07);border:1px solid var(--line-soft);color:#dbe7e3;
+  }
+  .shift-banner.active{background:var(--gold-dim);border-color:rgba(242,193,78,.5);color:#fde9b8}
+  .shift-banner b{color:#fff}
+  .shift-banner.active b{color:var(--gold)}
+
+  /* ---------- Cash-Day Split ---------- */
+  .split-bar-wrap{margin:16px 0 6px}
+  .split-bar{height:18px;border-radius:999px;background:#05120e;border:1px solid var(--line-soft);overflow:hidden;display:flex}
+  .split-bar .now{background:linear-gradient(90deg,#0d9488,#2dd4bf);transition:width .35s ease}
+  .split-bar .later{background:var(--gold);transition:width .35s ease}
+  .split-bar-labels{display:flex;justify-content:space-between;gap:10px;font-size:12px;font-weight:700;color:var(--muted);margin-top:7px;flex-wrap:wrap}
+  .split-bar-labels .now-l{color:var(--teal-bright)}
+  .split-bar-labels .later-l{color:var(--gold)}
+  .plan-card{
+    margin-top:16px;border-radius:12px;padding:15px;background:var(--teal-dim);
+    border:1px solid rgba(45,212,191,.4);
+  }
+  .plan-card .plan-if{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-bright);margin-bottom:7px}
+  .plan-card .plan-line{font-size:16px;font-weight:800;line-height:1.5}
+  .plan-card .plan-line .gold{color:var(--gold)}
+  .plan-card .plan-line .arrow{color:var(--teal-bright);padding:0 2px}
+  .plan-card p{margin:7px 0 0;font-size:13px;color:var(--muted);line-height:1.55}
+  .chip[aria-pressed="true"]{background:var(--teal);color:#04211b;border-color:var(--teal)}
+
+  /* ---------- Footer ---------- */
+  footer{padding:30px 0 44px}
+  .foot-card{
+    border:1px solid var(--line-soft);background:var(--card-2);border-radius:14px;
+    padding:18px 20px;text-align:center;color:var(--muted);font-size:13.5px;line-height:1.65;
+  }
+  .foot-card b{color:#fff}
+  .foot-sim{color:var(--gold);font-weight:800;letter-spacing:.1em;text-transform:uppercase;font-size:11px;display:block;margin-bottom:6px}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div class="sim-strip">⚠ Simulated Data <span>— concept prototype · nothing here is a real transaction</span></div>
+
+<div class="wrap">
+  <header>
+    <div class="brand-row">
+      <div class="brand">
+        <div class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 12.5 9.5 18 20 6.5" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div class="wordmark">Due<span class="mate">Mate</span></div>
+          <div class="brand-sub">AI-Powered Trade Credit Resolution</div>
+        </div>
+      </div>
+      <div class="demo-badge"><i></i> Live Demo · Simulated</div>
+    </div>
+
+    <h1 class="tagline">From unpaid invoices to <em>verified payments</em> — <span class="gold">with trust on both sides.</span></h1>
+    <p class="header-note">Try the six core mechanisms below, exactly as a judge would: the verified ledger, the Bangla AI call, the Promise Lock, the PromiseProof receipt, Two-Way Promises, and the Cash-Day Split. <strong>Every name, amount and conversation is simulated.</strong></p>
+
+    <div class="flow" aria-hidden="true">
+      <div class="flow-step active"><b>1</b> Paper khata → verified ledger</div><span class="flow-arrow">→</span>
+      <div class="flow-step"><b>2</b> Bangla AI call</div><span class="flow-arrow">→</span>
+      <div class="flow-step"><b>3</b> Promise Lock</div><span class="flow-arrow">→</span>
+      <div class="flow-step"><b>4</b> PromiseProof receipt</div><span class="flow-arrow">→</span>
+      <div class="flow-step"><b>5</b> Two-Way Promises</div><span class="flow-arrow">→</span>
+      <div class="flow-step"><b>6</b> Cash-Day Split</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid">
+
+      <!-- 1 · LEDGER -->
+      <section class="card" aria-labelledby="ledger-h">
+        <div class="card-head">
+          <div class="kicker"><span class="num">1</span> Ledger</div>
+          <span class="sim-tag">Simulated Data</span>
+        </div>
+        <h2 id="ledger-h">The paper khata becomes a verified ledger</h2>
+        <p class="lede">Every বাকি entry from the distributor's notebook, digitised and matched against payment records — so both sides argue from the same numbers.</p>
+
+        <div class="dist-row">
+          <div>
+            <div class="label">Distributor</div>
+            <div class="name">Farhan Enterprise</div>
+          </div>
+          <div class="total">
+            <div class="amt">৳50,700</div>
+            <div class="cap">Total outstanding</div>
+          </div>
+        </div>
+
+        <table class="ledger">
+          <thead>
+            <tr><th scope="col">Shop</th><th scope="col" class="r">Due</th><th scope="col">Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="shopcell"><span class="shop">Rahela Store</span><span class="ledger-mobile-status"><span class="status st-dispute">Dispute raised</span></span></td>
+              <td class="r amt">৳12,500</td>
+              <td><span class="status st-dispute">Dispute raised</span></td>
+            </tr>
+            <tr>
+              <td class="shopcell"><span class="shop">Karim Traders</span><span class="ledger-mobile-status"><span class="status st-promise">Promise recorded</span></span></td>
+              <td class="r amt">৳30,000</td>
+              <td><span class="status st-promise">Promise recorded</span></td>
+            </tr>
+            <tr>
+              <td class="shopcell"><span class="shop">New Market Store</span><span class="ledger-mobile-status"><span class="status st-settled">Settled</span></span></td>
+              <td class="r amt">৳0</td>
+              <td><span class="status st-settled">Settled</span></td>
+            </tr>
+            <tr>
+              <td class="shopcell"><span class="shop">Alam Store</span><span class="ledger-mobile-status"><span class="status st-wait">Awaiting call</span></span></td>
+              <td class="r amt">৳8,200</td>
+              <td><span class="status st-wait">Awaiting call</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="foot-note">Balances are <strong>verified against invoices and payment records</strong> before any call is made — a shop is never chased for money it doesn't owe.</p>
+      </section>
+
+      <!-- 2 · BANGLA AI CALL -->
+      <section class="card" aria-labelledby="call-h">
+        <div class="card-head">
+          <div class="kicker"><span class="num">2</span> Bangla AI Call</div>
+          <span class="sim-tag">Simulated Data</span>
+        </div>
+        <h2 id="call-h">A polite call in Bangla — that stops the moment there's a dispute</h2>
+        <p class="lede">Consent-based, in the shopkeeper's own language, from the distributor's own number. Press play and watch what happens when the balance is challenged.</p>
+
+        <div class="phone">
+          <div class="phone-head">
+            <div class="avatar" aria-hidden="true">DM</div>
+            <div class="who">
+              <b>DueMate AI Call</b>
+              <span>To: Rahela Store · Language: Bangla · Simulated</span>
+            </div>
+            <div class="live-dot" id="liveDot"><i></i><span id="liveText">Ready</span></div>
+          </div>
+          <div class="chat" id="chat" aria-live="polite">
+            <div class="chat-empty" id="chatEmpty">
+              <span class="big" aria-hidden="true">📞</span>
+              No call yet.<br>Press <b>“Play the call”</b> to hear how DueMate handles a disputed balance.
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-teal" id="playBtn" type="button">▶&nbsp; Play the call</button>
+          <span class="hint">Simulated conversation · ~10 seconds</span>
+        </div>
+
+        <p class="foot-note">The rule is hard-coded, not a suggestion: <strong>while a dispute is open, the system asks for no money.</strong></p>
+      </section>
+
+      <!-- 3 · PROMISE LOCK -->
+      <section class="card" aria-labelledby="lock-h">
+        <div class="card-head">
+          <div class="kicker"><span class="num">3</span> Promise Lock</div>
+          <span class="sim-tag">Simulated Data</span>
+        </div>
+        <h2 id="lock-h">A shop can never promise money it doesn't have</h2>
+        <p class="lede">Each shop sets its <strong style="color:#fff">own</strong> weekly promise limit. Before a new promise is recorded, DueMate checks it against what's already promised — across distributors.</p>
+
+        <div class="lock-stats">
+          <div class="stat"><div class="cap">Weekly limit (shop-set)</div><div class="val">৳50,000</div></div>
+          <div class="stat"><div class="cap">Already promised</div><div class="val">৳40,000</div></div>
+          <div class="stat"><div class="cap">Remaining capacity</div><div class="val teal" id="remainVal">৳10,000</div></div>
+        </div>
+
+        <div class="capbar-wrap">
+          <div class="capbar-labels"><span>Promised this week</span><span id="capPct">80% of limit</span></div>
+          <div class="capbar" role="img" aria-label="Capacity bar: 40,000 of 50,000 taka already promised, 10,000 remaining">
+            <div class="used" id="barUsed"></div><div class="new" id="barNew"></div><div class="free"></div>
+          </div>
+        </div>
+
+        <form class="lock-form" id="lockForm" novalidate>
+          <label for="lockAmt">Try it — enter a new promise amount (৳)</label>
+          <div class="lock-form-row">
+            <input id="lockAmt" type="text" inputmode="numeric" enterkeyhint="go" placeholder="e.g. 8000" autocomplete="off" />
+            <button class="btn btn-teal" type="submit">Check Promise Lock</button>
+          </div>
+          <div class="chips" aria-label="Quick amounts">
+            <button class="chip" type="button" data-amt="5000">৳5,000</button>
+            <button class="chip" type="button" data-amt="10000">৳10,000</button>
+            <button class="chip" type="button" data-amt="15000">৳15,000</button>
+            <button class="chip" type="button" data-amt="25000">৳25,000</button>
+          </div>
+        </form>
+
+        <div class="verdict" id="verdict" role="status" aria-live="polite"></div>
+
+        <p class="foot-note">Privacy by design: the Lock checks capacity <strong>without revealing anything about the shop's other distributors</strong> — no amounts, no identities, no shared lists.</p>
+      </section>
+
+      <!-- 4 · PROMISEPROOF RECEIPT -->
+      <section class="card" aria-labelledby="receipt-h">
+        <div class="card-head">
+          <div class="kicker"><span class="num">4</span> PromiseProof</div>
+          <span class="sim-tag">Simulated Data</span>
+        </div>
+        <h2 id="receipt-h">Kept promises become proof a shop can carry</h2>
+        <p class="lede">When a promised payment lands and verifies, the shop receives a receipt it owns — evidence of reliability, earned one kept promise at a time.</p>
+
+        <div class="receipt" role="img" aria-label="Simulated PromiseProof receipt: Karim Traders promised 30,000 taka by Friday, paid 30,000 taka via bKash on Friday at 11:42 AM, verified against payment record and invoice. Promise kept, receipt number DM-1042.">
+          <div class="r-head">
+            <b>PromiseProof Receipt</b>
+            <span>Simulated · Verified Payment</span>
+          </div>
+          <div class="r-row"><span class="k">Shop</span><span class="v">Karim Traders</span></div>
+          <div class="r-row"><span class="k">Promised</span><span class="v">৳30,000 by Friday</span></div>
+          <div class="r-row"><span class="k">Paid via bKash</span><span class="v">৳30,000</span></div>
+          <div class="r-row"><span class="k">Paid at</span><span class="v">Friday, 11:42 AM</span></div>
+          <div class="r-row"><span class="k">Verified against</span><span class="v teal">Payment record + invoice ✓</span></div>
+          <div class="seal">✓ PROMISE KEPT — PromiseProof Receipt #DM-1042</div>
+        </div>
+
+        <div class="two-way">
+          <div class="t">⇄ Two-Way Promises</div>
+          <p>Fairness runs both directions: if the <strong>distributor delivers late</strong>, the shop's payment date shifts <strong>day-for-day</strong> automatically — recorded against the distributor's own promise.</p>
+        </div>
+
+        <p class="foot-note">Receipts are <strong>retailer-held and positive-only</strong>. DueMate issues <strong>no credit scores and no defaulter lists</strong> — proof of promises kept, never punishment for promises missed.</p>
+      </section>
+
+      <!-- 5 · TWO-WAY PROMISES -->
+      <section class="card" aria-labelledby="twoway-h">
+        <div class="card-head">
+          <div class="kicker"><span class="num">5</span> Two-Way Promises</div>
+          <span class="sim-tag">Simulated Data</span>
+        </div>
+        <h2 id="twoway-h">The distributor's promise counts too</h2>
+        <p class="lede">A promise is only fair if it binds both sides. When the distributor's own delivery slips, the shop's payment date moves with it — day for day, automatically.</p>
+
+        <div class="scenario-box">
+          <b>Farhan Enterprise</b> promised delivery to <b>Rahela Store</b> by <b>Tuesday</b>. Rahela's payment of <span class="amt-gold">৳12,500</span> is due <b>Friday</b>. Drag the slider to make the delivery late — and watch the payment date.
+        </div>
+
+        <label class="slider-label" for="lateRange">
+          <span>Distributor delivers late by</span>
+          <span class="slider-val" id="lateVal">0 days — on time</span>
+        </label>
+        <input type="range" id="lateRange" min="0" max="7" step="1" value="0" aria-describedby="twowayResult" />
+        <div class="slider-ticks" aria-hidden="true"><span>0 · on time</span><span>2</span><span>4</span><span>7 days late</span></div>
+
+        <div class="dates-grid">
+          <div class="date-card ontime" id="deliveryCard">
+            <div class="cap">Delivery arrives</div>
+            <div class="day" id="deliveryDay">Tuesday</div>
+            <div class="sub" id="deliverySub">As promised</div>
+          </div>
+          <div class="dates-arrow" aria-hidden="true">→</div>
+          <div class="date-card ontime" id="paymentCard">
+            <div class="cap">Payment due · ৳12,500</div>
+            <div class="day" id="paymentDay">Friday</div>
+            <div class="sub" id="paymentSub">Unchanged</div>
+          </div>
+        </div>
+
+        <div class="shift-banner" id="twowayResult" role="status" aria-live="polite">Payment due: <b>Friday (unchanged)</b> — the delivery kept its promise, so the payment keeps its date.</div>
+
+        <p class="foot-note">Recorded in the same ledger, under rules both sides agreed in advance. <strong>Fairness runs both ways.</strong></p>
+      </section>
+
+      <!-- 6 · CASH-DAY SPLIT PROMISE -->
+      <section class="card" aria-labelledby="split-h">
+        <div class="card-head">
+          <div class="kicker"><span class="num">6</span> Cash-Day Split</div>
+          <span class="sim-tag">Simulated Data</span>
+        </div>
+        <h2 id="split-h">Part now, part on cash day</h2>
+        <p class="lede">A shop that can't pay everything today shouldn't have to break a promise. It splits the payment itself: some now, the rest on the day its cash actually comes in.</p>
+
+        <div class="scenario-box">
+          <b>Alam Store</b> owes <span class="amt-gold">৳8,200</span>. Its cash day is <b>Saturday</b> — market day, when the week's sales land. Choose how much it pays now:
+        </div>
+
+        <label class="slider-label" for="splitRange">
+          <span>Pay now via bKash</span>
+          <span class="slider-val" id="splitPctVal" style="color:var(--teal-bright)">50%</span>
+        </label>
+        <input type="range" id="splitRange" class="teal-range" min="0" max="100" step="5" value="50" aria-describedby="splitResult" />
+        <div class="chips" aria-label="Quick split percentages">
+          <button class="chip split-chip" type="button" data-pct="25" aria-pressed="false">25% now</button>
+          <button class="chip split-chip" type="button" data-pct="50" aria-pressed="true">50% now</button>
+          <button class="chip split-chip" type="button" data-pct="75" aria-pressed="false">75% now</button>
+        </div>
+
+        <div class="split-bar-wrap">
+          <div class="split-bar" role="img" aria-label="Split bar showing how the 8,200 taka divides between paying now and paying on Saturday" id="splitBarImg">
+            <div class="now" id="splitNowBar" style="width:50%"></div><div class="later" id="splitLaterBar" style="width:50%"></div>
+          </div>
+          <div class="split-bar-labels">
+            <span class="now-l" id="splitNowLabel">Now via bKash · ৳4,100</span>
+            <span class="later-l" id="splitLaterLabel">Saturday (cash day) · ৳4,100</span>
+          </div>
+        </div>
+
+        <div class="plan-card" id="splitResult" role="status" aria-live="polite">
+          <div class="plan-if">If–Then Plan · Alam Store</div>
+          <div class="plan-line" id="splitPlanLine">Pay <span id="splitNowAmt">৳4,100</span> now via bKash <span class="arrow">→</span> remaining <span class="gold" id="splitLaterAmt">৳4,100</span> auto-scheduled for Saturday (cash day).</div>
+          <p>Total always ৳8,200 — the split changes <em>when</em>, never <em>how much</em>.</p>
+        </div>
+
+        <p class="foot-note">An if-then plan the shop chose itself — <strong>not a penalty, not pressure.</strong> Both halves are recorded as one promise, checked by the Promise Lock like any other.</p>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="foot-card">
+      <span class="foot-sim">Simulated Data · Concept Prototype</span>
+      <b>DueMate</b> · FinSphere — SME Capital Engine · International AI Builders Congress 2026 — Concept prototype. All names, amounts and conversations are simulated for demonstration.
+    </div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- 2 · Bangla AI Call simulation ---------- */
+  var chat = document.getElementById('chat');
+  var playBtn = document.getElementById('playBtn');
+  var liveDot = document.getElementById('liveDot');
+  var liveText = document.getElementById('liveText');
+  var timers = [];
+
+  function later(fn, ms){ timers.push(setTimeout(fn, ms)); }
+  function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+
+  function el(html){
+    var d = document.createElement('div');
+    d.innerHTML = html;
+    return d.firstElementChild;
+  }
+  function show(node){ requestAnimationFrame(function(){ requestAnimationFrame(function(){ node.classList.add('show'); }); }); }
+
+  var steps = [
+    { delay: 500, build: function(){
+        return el('<div class="msg ai"><div class="from">DueMate AI · Bangla</div>' +
+          '<div class="bubble bn">আপনার ৳১২,৫০০ বাকি আছে। কখন দিতে পারবেন?</div>' +
+          '<div class="sub">“You have ৳12,500 due. When would you be able to pay?”</div></div>');
+      }},
+    { delay: 2100, build: function(){
+        return el('<div class="msg retailer"><div class="from">Rahela Store · Retailer</div>' +
+          '<div class="bubble bn">ভাই, চার হাজার তো আগেই দিছি।</div>' +
+          '<div class="sub">“I already paid four thousand taka.”</div></div>');
+      }},
+    { delay: 2100, build: function(){
+        return el('<div class="alert-box alert-gold"><div class="t">⚠ DISPUTE DETECTED</div>' +
+          '<p>The retailer\'s claim of a ৳4,000 payment is checked against the payment records — <b>never argued with on the call</b>. The balance is flagged for verification.</p></div>');
+      }},
+    { delay: 2300, build: function(){
+        return el('<div class="alert-box alert-red"><div class="t">⛔ COLLECTION PAUSED</div>' +
+          '<p>The Dispute-First Gate engages: <b>no money is asked for while a dispute is open</b>, and the promise clock pauses until the records are checked.</p></div>');
+      }}
+  ];
+
+  function playCall(){
+    clearTimers();
+    chat.innerHTML = '';
+    playBtn.disabled = true;
+    playBtn.textContent = '↻  Replaying…';
+    liveDot.classList.add('on');
+    liveText.textContent = 'Live';
+
+    var typing = el('<div class="typing" aria-hidden="true"><i></i><i></i><i></i></div>');
+    chat.appendChild(typing);
+
+    var t = 0;
+    steps.forEach(function(step, i){
+      t += step.delay;
+      later(function(){ typing.classList.add('on'); chat.appendChild(typing); typing.scrollIntoView({block:'nearest', behavior:'smooth'}); }, t - 700 < 0 ? 0 : t - 700);
+      later(function(){
+        typing.classList.remove('on');
+        var node = step.build();
+        chat.insertBefore(node, typing);
+        show(node);
+        node.scrollIntoView({block:'nearest', behavior:'smooth'});
+        if (i === steps.length - 1){
+          later(function(){
+            typing.remove();
+            liveDot.classList.remove('on');
+            liveText.textContent = 'Ended';
+            playBtn.disabled = false;
+            playBtn.innerHTML = '↻&nbsp; Replay the call';
+          }, 600);
+        }
+      }, t);
+    });
+  }
+  playBtn.addEventListener('click', playCall);
+
+  /* ---------- 3 · Promise Lock ---------- */
+  var LIMIT = 50000, PROMISED = 40000, REMAINING = LIMIT - PROMISED;
+  var form = document.getElementById('lockForm');
+  var input = document.getElementById('lockAmt');
+  var verdict = document.getElementById('verdict');
+  var barUsed = document.getElementById('barUsed');
+  var barNew = document.getElementById('barNew');
+  var capPct = document.getElementById('capPct');
+  var remainVal = document.getElementById('remainVal');
+
+  function fmt(n){ return '৳' + n.toLocaleString('en-IN'); }
+
+  /* Lenient amount parser: accepts plain digits, comma-grouped digits
+     ("10,000"), a leading ৳ sign, spaces, and Bangla digits (০–৯). */
+  var BN_DIGITS = {'০':'0','১':'1','২':'2','৩':'3','৪':'4','৫':'5','৬':'6','৭':'7','৮':'8','৯':'9'};
+  function parseAmount(raw){
+    if (raw === null || raw === undefined) return NaN;
+    var s = String(raw).replace(/[০-৯]/g, function(ch){ return BN_DIGITS[ch]; });
+    s = s.replace(/[^0-9]/g, '');
+    if (!s) return NaN;
+    return parseInt(s, 10);
+  }
+
+  function checkLock(amount){
+    verdict.classList.remove('show','ok','block');
+    barNew.style.width = '0%';
+    if (isNaN(amount) || amount <= 0){
+      capPct.textContent = '80% of limit';
+      remainVal.textContent = fmt(REMAINING);
+      verdict.classList.add('show','block');
+      verdict.innerHTML = '<div class="t">⚠ Enter an amount first</div><p>Type a promise amount above — for example ৳8,000 — then check it against the shop\'s remaining capacity.</p>';
+      return;
+    }
+    var pct = Math.min(100, Math.round(amount / LIMIT * 100));
+    if (amount <= REMAINING){
+      barNew.style.width = pct + '%';
+      capPct.textContent = Math.round((PROMISED + amount) / LIMIT * 100) + '% of limit if recorded';
+      remainVal.textContent = fmt(REMAINING - amount) + ' left';
+      verdict.classList.add('show','ok');
+      verdict.innerHTML = '<div class="t">🔒 LOCKED IN — fits remaining capacity</div>' +
+        '<p>A promise of <b>' + fmt(amount) + '</b> fits inside the shop\'s remaining ' + fmt(REMAINING) + '. It is recorded, and ' + fmt(REMAINING - amount) + ' of capacity stays in reserve. No other distributor is told anything.</p>';
+    } else {
+      capPct.textContent = '80% of limit';
+      remainVal.textContent = fmt(REMAINING);
+      verdict.classList.add('show','block');
+      verdict.innerHTML = '<div class="t">🛡 PROMISE LOCK — promise not recorded</div>' +
+        '<p><b>' + fmt(amount) + '</b> exceeds the shop\'s remaining capacity of ' + fmt(REMAINING) + ' by ' + fmt(amount - REMAINING) + '. The shop is <b>protected from over-promising</b>: the promise is declined kindly on the call, and the shop can offer up to ' + fmt(REMAINING) + ' instead.</p>';
+    }
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    checkLock(parseAmount(input.value));
+  });
+  document.querySelectorAll('#lockForm .chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      input.value = chip.getAttribute('data-amt');
+      checkLock(parseAmount(input.value));
+    });
+  });
+  input.addEventListener('input', function(){
+    if (!verdict.classList.contains('show')) return;
+    barNew.style.width = '0%';
+    capPct.textContent = '80% of limit';
+    remainVal.textContent = fmt(REMAINING);
+    verdict.classList.remove('show');
+  });
+
+  /* ---------- 5 · Two-Way Promises ---------- */
+  var DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  var TUE = 1, FRI = 4; /* indexes into DAYS */
+  var lateRange = document.getElementById('lateRange');
+  var lateVal = document.getElementById('lateVal');
+  var deliveryDay = document.getElementById('deliveryDay');
+  var deliverySub = document.getElementById('deliverySub');
+  var deliveryCard = document.getElementById('deliveryCard');
+  var paymentDay = document.getElementById('paymentDay');
+  var paymentSub = document.getElementById('paymentSub');
+  var paymentCard = document.getElementById('paymentCard');
+  var twowayResult = document.getElementById('twowayResult');
+
+  function dayName(idx){ return DAYS[((idx % 7) + 7) % 7]; }
+
+  function updateTwoway(){
+    var late = parseInt(lateRange.value, 10) || 0;
+    var dDay = dayName(TUE + late);
+    var pDay = dayName(FRI + late);
+    deliveryDay.textContent = dDay;
+    paymentDay.textContent = pDay;
+    if (late === 0){
+      lateVal.textContent = '0 days — on time';
+      deliverySub.textContent = 'As promised';
+      paymentSub.textContent = 'Unchanged';
+      deliveryCard.className = 'date-card ontime';
+      paymentCard.className = 'date-card ontime';
+      twowayResult.className = 'shift-banner';
+      twowayResult.innerHTML = 'Payment due: <b>Friday (unchanged)</b> — the delivery kept its promise, so the payment keeps its date.';
+    } else {
+      lateVal.textContent = late + (late === 1 ? ' day late' : ' days late');
+      deliverySub.textContent = late + (late === 1 ? ' day' : ' days') + ' after the promised Tuesday';
+      paymentSub.textContent = 'Shifted +' + late + (late === 1 ? ' day' : ' days') + ' from Friday';
+      deliveryCard.className = 'date-card shifted';
+      paymentCard.className = 'date-card shifted';
+      twowayResult.className = 'shift-banner active';
+      twowayResult.innerHTML = 'Delivery slipped <b>' + late + (late === 1 ? ' day' : ' days') + '</b> (now ' + dDay + ') → payment date shifts ' + late + (late === 1 ? ' day' : ' days') + ': <b>due ' + pDay + '</b>. No call, no argument — the agreed rule applies itself.';
+    }
+  }
+  lateRange.addEventListener('input', updateTwoway);
+  updateTwoway();
+
+  /* ---------- 6 · Cash-Day Split Promise ---------- */
+  var SPLIT_TOTAL = 8200;
+  var splitRange = document.getElementById('splitRange');
+  var splitPctVal = document.getElementById('splitPctVal');
+  var splitNowBar = document.getElementById('splitNowBar');
+  var splitLaterBar = document.getElementById('splitLaterBar');
+  var splitNowLabel = document.getElementById('splitNowLabel');
+  var splitLaterLabel = document.getElementById('splitLaterLabel');
+  var splitNowAmt = document.getElementById('splitNowAmt');
+  var splitLaterAmt = document.getElementById('splitLaterAmt');
+  var splitBarImg = document.getElementById('splitBarImg');
+  var splitChips = document.querySelectorAll('.split-chip');
+
+  function updateSplit(pct){
+    pct = Math.max(0, Math.min(100, pct));
+    var now = Math.round(SPLIT_TOTAL * pct / 100 / 10) * 10;
+    var later = SPLIT_TOTAL - now;
+    splitPctVal.textContent = pct + '%';
+    splitNowBar.style.width = (now / SPLIT_TOTAL * 100) + '%';
+    splitLaterBar.style.width = (later / SPLIT_TOTAL * 100) + '%';
+    splitNowLabel.textContent = 'Now via bKash · ' + fmt(now);
+    splitLaterLabel.textContent = 'Saturday (cash day) · ' + fmt(later);
+    splitNowAmt.textContent = fmt(now);
+    splitLaterAmt.textContent = fmt(later);
+    splitBarImg.setAttribute('aria-label', 'Split bar: ' + fmt(now) + ' now via bKash, ' + fmt(later) + ' on Saturday, of 8,200 taka total');
+    splitChips.forEach(function(chip){
+      chip.setAttribute('aria-pressed', parseInt(chip.getAttribute('data-pct'), 10) === pct ? 'true' : 'false');
+    });
+  }
+  splitRange.addEventListener('input', function(){ updateSplit(parseInt(splitRange.value, 10)); });
+  splitChips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      var pct = parseInt(chip.getAttribute('data-pct'), 10);
+      splitRange.value = pct;
+      updateSplit(pct);
+    });
+  });
+  updateSplit(50);
+})();
+</script>
+</body>
+</html>
